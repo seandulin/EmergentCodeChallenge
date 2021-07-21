@@ -1,0 +1,52 @@
+﻿@model EmergentCodeChallenge.Models.SearchViewModel
+@{
+    ViewData["Title"] = "Software Version Search";
+}
+
+    <div>
+        <h1 class="display-4">Search</h1>
+        <p>Please enter the a version number and click submit to see packages and versions used that are higher than what was entered.</p>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group input-group mb-3">
+                @Html.TextBoxFor(model => model.SoftwareVersion, new { @class = "form-control form-control-", @placeholder = "Software version... 1.0.0" })
+                @Html.ValidationMessageFor(model => model.SoftwareVersion)
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model?.Message))
+        {
+            <p class="alert-warning">@Model?.Message</p>
+        }
+        else if (Model?.SoftwareResults != null && Model?.SoftwareResults.Count() == 0)
+        {
+            <h3 class="display-4">Results</h3>
+            <p>No software can be found greater than @Model?.SoftwareVersion. Please search again if you didn't find what you were looking for.</p>
+        }
+        else if (Model?.SoftwareResults.Count() > 0)
+        {
+            <h3 class="display-4">Results</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Software Name</th>
+                        <th scope="col">Version</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var resultItem in Model.SoftwareResults)
+                    {
+                        <tr>
+                            <td scope="row">@resultItem.Name</td>
+                            <td>@resultItem.Version</td>
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
